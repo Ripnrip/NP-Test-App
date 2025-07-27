@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueprint QBank Practice Test - Complete Embedded</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .mode-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .mode-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.4em;
+        }
+        
+        .mode-card.random {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .mode-card.full {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+        }
+        
+        .question-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4facfe;
+        }
+        
+        .question-number {
+            color: #666;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .answers {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .answer-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            text-align: left;
+        }
+        
+        .answer-option:hover {
+            border-color: #4facfe;
+            background: #f8f9ff;
+        }
+        
+        .answer-option.selected {
+            border-color: #4facfe;
+            background: #e3f2fd;
+        }
+        
+        .answer-option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .answer-option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .answer-letter {
+            font-weight: bold;
+            color: #4facfe;
+            margin-right: 10px;
+        }
+        
+        .feedback {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #28a745;
+        }
+        
+        .feedback.incorrect {
+            border-left-color: #dc3545;
+        }
+        
+        .feedback h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+        
+        .explanation {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .why-others {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .references {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn.secondary {
+            background: #6c757d;
+        }
+        
+        .progress {
+            text-align: center;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .score-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .score-summary h2 {
+            margin: 0 0 20px 0;
+            font-size: 2em;
+        }
+        
+        .score-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .settings {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .setting-item {
+            margin-bottom: 15px;
+        }
+        
+        .setting-item label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .setting-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        @media (max-width: 768px) {
+            .mode-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .score-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Blueprint QBank data (embedded directly to avoid CORS issues)
+        const questionData = {
+            "testInfo": {
+                "totalQuestions": 25,
+                "extractedAt": "2025-07-27T15:54:25.638Z",
+                "testName": "Blueprint QBank Complete Review - All Data"
+            },
+            "questions": [
+                {
+                    "questionNumber": 1,
+                    "questionText": "A 78-year-old woman presents to the clinic with her daughter, the primary caregiver. Her daughter notes that the patient has seemed more forgetful than usual. Which of the following scenarios would be concerning for potential Alzheimer disease?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Her memory issues have declined over the past few years, and she has a resting tremor",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B", 
+                            "text": "She has been more drowsy since starting a sulfonylurea for diabetes",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "She has had a steady decline in memory over the past 2 years",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "She recently had pneumonia and has been acting more confused since",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Alzheimer disease is a neurodegenerative disorder and a common cause of dementia in older adults. If she has had a steady decline in memory over the past 2 years (C), Alzheimer and other causes of dementia should be considered.",
+                    "whyOthersIncorrect": "Declining memory issues in the setting of a resting tremor (A) could suggest a diagnosis of Parkinson disease. Drowsiness after starting a sulfonylurea (B) could be medication-induced memory issues. A recent pneumonia (D) or other infection could be a toxic-metabolic cause of memory disturbances.",
+                    "references": [
+                        {
+                            "text": "Papadakis MA, McPhee SJ, Rabow MW, McQuaid KR, eds. Current Medical Diagnosis & Treatment 2023. 62nd ed. McGraw Hill; 2023.",
+                            "url": "https://accessmedicine.mhmedical.com/book.aspx?bookid=3212"
+                        },
+                        {
+                            "text": "Wolk DA, Dickerson BC. Clinical features and diagnosis of Alzheimer disease. Post TW, ed. UpToDate. UpToDate Inc. Accessed February 1, 2023.",
+                            "url": "https://www.uptodate.com/contents/clinical-features-and-diagnosis-of-alzheimer-disease"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 2,
+                    "questionText": "Which of the following signs and symptoms are suggestive of lithium (Lithobid) toxicity?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Confusion, dizziness, and cerebral edema",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Vomiting, slurred speech, and a hand tremor",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Tardive dyskinesia, restlessness, and acute dystonia",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Headache, delayed hypersensitivity skin reactions, and rash",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Lithium (Lithobid) is a mood stabilizer used for the management of bipolar disorder. Toxicity can occur when plasma lithium levels are ≥ 1.5 mEq/L, and symptoms that are concerning for toxicity include vomiting, slurred speech, and a hand tremor (B).",
+                    "whyOthersIncorrect": "Confusion, dizziness, and cerebral edema (A) are common signs of valproic acid (Depakote) toxicity. Tardive dyskinesia, restlessness, and acute dystonia (C) describe extrapyramidal adverse effects associated with first-generation antipsychotics. Headaches, delayed hypersensitivity skin reactions, and rashes (D) are significant adverse effects associated with lamotrigine (Lamictal).",
+                    "references": [
+                        {
+                            "text": "Janicak PG. Bipolar disorder in adults and lithium: pharmacology, administration, and management of adverse effects. Post TW, ed. UpToDate. UpToDate Inc. Accessed September 5, 2024.",
+                            "url": "https://www.uptodate.com/contents/bipolar-disorder-in-adults-and-lithium-pharmacology-administration-and-management-of-adverse-effects"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 3,
+                    "questionText": "A 6-year-old patient presents to the clinic with his parent, who reports several blister-like lesions on the trunk that developed over the past few days. Which of the following is the most likely diagnosis?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Bullous impetigo",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Herpes zoster",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Nonbullous impetigo",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Varicella",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "This patient's clinical presentation is consistent with bullous impetigo (A), which is a superficial skin infection that most commonly affects children. Bullous impetigo is characterized by large fluid-filled blisters (bullae) with clear-yellow fluid that most commonly develop on the trunk.",
+                    "whyOthersIncorrect": "Herpes zoster (B), or shingles, is a viral condition that presents as a vesicular rash that follows a dermatome. Nonbullous impetigo (C) initially develops as a papule that quickly progresses to a vesicle, which erupts and leaves thick golden crusts. Varicella (D), or chickenpox, is characterized by a diffuse papular rash that progresses into erythematous vesicles.",
+                    "references": [
+                        {
+                            "text": "Craft N, Lee PK, Zipoli MT, et al. Superficial cutaneous infections and pyodermas. In: Goldsmith LA, Katz SI, Gilchrest BA, et al., eds. Fitzpatrick's Dermatology in General Medicine. 8th ed. McGraw-Hill; 2012.",
+                            "url": ""
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 4,
+                    "questionText": "A 28-year-old woman is requesting long-acting reversible contraception and would like information regarding the copper intrauterine device. Which of the following are common side effects associated with the copper intrauterine device?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Acne and weight gain",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Breast tenderness and vaginitis",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Decrease menstrual bleeding and ovarian cyst formation",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Heavy menstrual bleeding and menstrual pain",
+                            "isCorrect": true
+                        }
+                    ],
+                    "explanation": "The most common side effects associated with copper intrauterine devices (IUDs) are heavy menstrual bleeding and menstrual pain (D). These side effects are due to the copper's effect on the endometrium.",
+                    "whyOthersIncorrect": "Acne and weight gain (A) and breast pain and vaginitis (B) are side effects of the dermal implant. The levonorgestrel-releasing IUD can decrease menstrual bleeding (C), but the copper IUD typically increases bleeding.",
+                    "references": [
+                        {
+                            "text": "Curtis KM, Tepper NK, Jatlaoui TC, et al. U.S. Medical Eligibility Criteria for Contraceptive Use, 2016. MMWR Recomm Rep. 2016;65(3):1-103.",
+                            "url": "https://www.cdc.gov/mmwr/volumes/65/rr/rr6503a1.htm"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 5,
+                    "questionText": "A 22-year-old patient presents to the clinic with knee pain for 1 day after playing soccer. Which of the following tests would be used to assess an anterior cruciate ligament injury?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Varus stress test",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Posterior drawer test",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Valgus stress test",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Anterior drawer test",
+                            "isCorrect": true
+                        }
+                    ],
+                    "explanation": "The anterior cruciate ligament (ACL) connects the distal lateral femur to the proximal tibia, limiting anterior translation of the tibia. The anterior drawer test (D) is used to assess ACL integrity by applying anterior force to the tibia while the knee is flexed at 90 degrees.",
+                    "whyOthersIncorrect": "The varus stress test (A) evaluates lateral collateral ligament tear. The posterior drawer test (B) evaluates posterior cruciate ligament tear. The valgus stress test (C) evaluates medial collateral ligament tear.",
+                    "references": [
+                        {
+                            "text": "Solomon DH, Simel DL, Bates DW, et al. The rational clinical examination. Does this patient have a torn meniscus or ligament of the knee? Value of the physical examination. JAMA. 2001;286(13):1610-1620.",
+                            "url": "https://jamanetwork.com/journals/jama/fullarticle/194303"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 6,
+                    "questionText": "A 39-year-old patient presents to the clinic due to increasing left foot pain. They report no injury to the site and state that the pain has gradually worsened over time. On physical examination, there is lateral deviation of the great toe at the first metatarsophalangeal joint, resulting in a prominent medial eminence and visible foot deformity. The most likely diagnosis is:",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Hallux limitus",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Hallux valgus",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Pes cavus",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Pes planus",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Hallux valgus (B), also known as a bunion, occurs when there is a lateral deviation of the great toe, causing pain and deformity of the foot. The deformity can clearly be seen on X-ray.",
+                    "whyOthersIncorrect": "Hallux limitus (A) is characterized by the inability of the great toe to dorsiflex, but no degeneration or deviation of the metatarsophalangeal (MTP) joint is present. Pes cavus (C) describes a foot with a high arch that remains locked and risen, even when bearing weight. Pes planus (D) is the opposite of pes cavus and is also known as being \"flat footed,\" which is characterized by collapse of the medial longitudinal arch of the foot.",
+                    "references": [
+                        {
+                            "text": "Ferrari J. Hallux valgus deformity (bunion) in adults. Post TW, ed. UpToDate. UpToDate Inc. Accessed January 21, 2023.",
+                            "url": "https://www.uptodate.com/contents/hallux-valgus-deformity-bunion-in-adults"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 7,
+                    "questionText": "A 35-year-old woman presents to the clinic with worsening hearing loss in the right ear. She also reports fullness in the right ear and intermittent dizziness. Which of the following exam findings is consistent with Ménière disease?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Air conduction is equal to bone conduction",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Bone conduction is two times longer than air conduction",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "The tuning fork lateralizes to the left ear",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "The tuning fork lateralizes to the right ear",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Ménière disease is a form of sensorineural hearing loss. The Weber test is used to test for sensorineural hearing loss by placing a vibrating tuning fork to the patient's midline head. Sensorineural hearing loss is present if the sound lateralizes to the unaffected ear.",
+                    "whyOthersIncorrect": "Air conduction that is equal to bone conduction (A) or bone conduction that is two times longer than air conduction (B) are both abnormal results of a Rinne test. The tuning fork lateralized to the right ear (D) is an abnormal result of the Weber test. This may be present in unilateral conductive hearing loss.",
+                    "references": [
+                        {
+                            "text": "Moskowitz HS, Dinces EA. Meniere disease: evaluation, diagnosis, and management. Post TW, ed. UpToDate. UpToDate Inc. Accessed January 14, 2023.",
+                            "url": "https://www.uptodate.com/contents/meniere-disease-evaluation-diagnosis-and-management"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 8,
+                    "questionText": "A 56-year-old woman presents to the clinic for her annual physical. The patient reports she has a lesion that has grown quite a bit in size over the last several months. Upon examination, it is black with light brown discoloration and ragged borders. Which of the following is the most likely diagnosis?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Actinic keratosis",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Basal cell carcinoma",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Malignant melanoma",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Squamous cell carcinoma",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Malignant melanoma (C) is the least common form of skin cancer, but it causes the most deaths. Typically, melanoma presents with an asymmetrical shape, border irregularity, color variation, diameter > 6 mm, and nevus evolution.",
+                    "whyOthersIncorrect": "Actinic keratosis (A) is a noncancerous precursor lesion associated with squamous cell carcinoma. They may appear as rough, scaly patches on sun-exposed skin. Basal cell carcinoma (B) generally appears as a pearly pink, dome-shaped papule with a telangiectatic surface. Squamous cell carcinoma (D) may appear as a raised scaly lesion with a horn of keratin.",
+                    "references": [
+                        {
+                            "text": "Firnhaber JM. Diagnosis and treatment of basal cell and squamous cell carcinoma. Am Fam Physician. 2012;86(2):161–168.",
+                            "url": "https://www.aafp.org/afp/2012/0715/p161.html"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 9,
+                    "questionText": "An 81-year-old patient reports she recently started taking a valerian root supplement. Which of the following is the most common indication for use of this supplement?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Insomnia",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Leg cramps",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Memory loss",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Nausea",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Valerian root is a dietary supplement that is primarily promoted for insomnia (A). It is also found helpful for anxiety, depression, and headaches and is used for premenstrual syndrome and menopausal symptoms.",
+                    "whyOthersIncorrect": "Valerian root is not promoted for leg cramps (B), memory loss (C), or nausea (D).",
+                    "references": [
+                        {
+                            "text": "Valerian. National Center for Complementary and Integrative Health website. Accessed January 30, 2023.",
+                            "url": "https://www.nccih.nih.gov/health/valerian"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 10,
+                    "questionText": "A 40-year-old man presents to the clinic with a cough, chest pressure after meals, and bad breath for 1 month. He states that his symptoms also worsen when taking ibuprofen for his chronic low back pain. Which of the following medications is recommended as first-line treatment for the suspected diagnosis?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Bismuth subsalicylate (Bismuth)",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Calcium carbonate antacid (Tums)",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Pantoprazole (Protonix)",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Sucralfate (Carafate)",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Proton pump inhibitors (PPIs), such as pantoprazole (C), are one of the first-line medications recommended in the treatment of gastroesophageal reflux disease (GERD). An 8-week course of PPIs can aid in repairing esophageal tissue and providing symptom relief.",
+                    "whyOthersIncorrect": "Bismuth subsalicylate (A) may provide some symptom relief, but it is not recommended on a daily basis. Calcium carbonate antacid (B) is also effective for short-term relief. Sucralfate (D) is often used in the treatment of GERD but is not a first-line treatment recommendation.",
+                    "references": [
+                        {
+                            "text": "Kahrilas PJ. Medical management of gastroesophageal reflux disease in adults. Post TW, ed. UpToDate. UpToDate Inc. Accessed December 23, 2022.",
+                            "url": "https://www.uptodate.com/contents/medical-management-of-gastroesophageal-reflux-disease-in-adults"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 11,
+                    "questionText": "A 29-year-old patient presents after stepping on a rusty nail while walking in a stream. They received all their childhood vaccinations, and their last Tdap was 6 years ago. The nurse practitioner should:",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Give nothing since their last Tdap was < 10 years ago",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Give a Tdap booster and tetanus immunoglobulin",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Give a Tdap booster",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Give tetanus immunoglobulin",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "The decision to provide tetanus prophylaxis after an injury is based on wound cleanliness and the patient's prior tetanus vaccination exposure. For patients with contaminated wounds who have had tetanus vaccine exposure within the past 10 years but the injury occurred > 5 years since their last booster, they should receive a Tdap booster (C).",
+                    "whyOthersIncorrect": "Giving nothing since their last Tdap was < 10 years ago (A) is incorrect because this patient had a contaminated wound and should receive a booster if it has been > 5 years since their last booster. This patient does not need tetanus immunoglobulin (B, D) since they have received prior tetanus vaccination.",
+                    "references": [
+                        {
+                            "text": "Baddour LM, Brown AM. Infectious complications of puncture wounds. Post TW, ed. UpToDate. UpToDate Inc. Accessed September 16, 2024.",
+                            "url": "https://www.uptodate.com/contents/infectious-complications-of-puncture-wounds"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 12,
+                    "questionText": "A 30-year-old patient with a history of obesity presents to the clinic with concerns about lesions in his groin area. He reports these lesions come and go, but they have been more persistent for the past 6 months. Physical exam of the groin reveals erythematous, edematous, large pustules that are tender to palpation. Which of the following is the most likely diagnosis?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Atopic dermatitis",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Hidradenitis suppurativa",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Seborrheic dermatitis",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Syphilis",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "The most likely diagnosis is hidradenitis suppurativa (B), which is a chronic inflammatory skin condition that develops in intertriginous areas, or skin folds. It most commonly affects the axilla but also develops in the inguinal, breast, perianal, and perineal regions.",
+                    "whyOthersIncorrect": "Atopic dermatitis (A) is a chronic inflammatory skin condition that is characterized by hypersensitivity, pruritus, and dry skin. Seborrheic dermatitis (C) consists of scaly, inflamed patches that develop on the scalp and oily areas of the body. Secondary-stage syphilis (D) can cause a nonpruritic red and brown rash to develop on the palms of the hands and the bottom of the feet.",
+                    "references": [
+                        {
+                            "text": "Ingram JR. Hidradenitis suppurativa: management. Accessed January 19, 2023.",
+                            "url": "https://www.uptodate.com/contents/hidradenitis-suppurativa-management"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 13,
+                    "questionText": "After education about diabetes by the nurse practitioner, a patient states that they know that uncontrolled diabetes can lead to amputations. Which construct of the health belief model does this statement demonstrate?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Perceived severity",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Perceived susceptibility",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Cues to action",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Self-efficacy",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "The health belief model describes six concepts believed to influence a patient's likelihood to improve health behaviors. Perceived severity (A) is when the patient is aware of the potential complications of a condition if they choose not to act.",
+                    "whyOthersIncorrect": "Perceived susceptibility (B) would be the patient's knowledge that obesity increases their risk of developing diabetes. Cues to action (C) would be setting reminders on the patient's phone to take medication for diabetes. Self-efficacy (D) would be the patient feeling confident monitoring their blood glucose after receiving diabetes education.",
+                    "references": [
+                        {
+                            "text": "Glanz K, Rimer BK. Health behavior theories. In: Boulton ML, Wallace RB, eds. Maxcy-Rosenau-Last Public Health & Preventive Medicine. 16th ed. McGraw Hill; 2022:(Ch) 35.",
+                            "url": "https://accessmedicine.mhmedical.com/content.aspx?bookid=3078&sectionid=256744887"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 14,
+                    "questionText": "A 34-year-old patient presents to the clinic with breast lumps that are tender and that present before their menstrual cycle. On physical exam, the nurse practitioner notes several small lumps in both breasts that are freely mobile. The most likely diagnosis is:",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Fibrocystic breast disease",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Mastitis",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Inflammatory breast cancer",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Lipoma",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Fibrocystic breast disease (A) is a benign condition in which fluid-filled cysts develop in the breasts, most likely due to hormonal changes. Patients may report multiple painful lumps that occur just before menstruation.",
+                    "whyOthersIncorrect": "Mastitis (B) would present with pain, swelling, erythema, and warmth of the affected breast, and it typically occurs in conjunction with breastfeeding. Inflammatory breast cancer (C) normally presents with unilateral breast swelling, warmth, and an orange-peel appearance of the skin. Lipoma (D) is usually painless, slow growing, and moveable.",
+                    "references": [
+                        {
+                            "text": "Golshan M. Breast pain. Post TW, ed. UpToDate. UpToDate Inc. Accessed October 10, 2024.",
+                            "url": "https://www.uptodate.com/contents/breast-pain"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 15,
+                    "questionText": "A parent brings their newborn to the clinic for an evaluation of a new lesion on the left chest. The parent reports that the lesion started out flat and small but appears to be growing. The physical exam is significant for a slightly raised, lobulated, soft, and compressible lesion that is bright red. Dilated capillaries are visible at the surface of the lesion. Which of the following actions is most appropriate?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Biopsy the lesion",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Educate the parent that growth may continue for 6 months but should be followed by spontaneous involution over several years",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Initiate treatment with propranolol",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Refer the newborn to vascular surgery",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Formerly referred to as a strawberry hemangioma, infantile hemangiomas are considered superficial tumors. Most develop over the first 6 months of life and undergo a period of proliferation that can span up to 6 months. This proliferative phase is followed by a period of spontaneous involution (resolution) that typically does not require treatment.",
+                    "whyOthersIncorrect": "Skin biopsy (A) is not indicated with this type of lesion. Propranolol (C) is only considered when lesions develop in a location that interferes with vital functions, such as vision or breathing. A referral to vascular surgery (D) is not necessary given the location of this lesion and its natural course.",
+                    "references": [
+                        {
+                            "text": "Metry DW. Infantile hemangiomas: epidemiology, pathogenesis, clinical features, and complications. Post TW, ed. UpToDate. UpToDate Inc. Accessed March 11, 2023.",
+                            "url": "https://www.uptodate.com/contents/infantile-hemangiomas-epidemiology-pathogenesis-clinical-features-and-complications"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 16,
+                    "questionText": "Which of the following is a component of the female athlete triad?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Compulsive exercise",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "High energy levels",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Infrequent menstrual cycles",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Mental health disorder",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "There are three entities to the female athlete triad, which include infrequent menstrual cycles (C) or oligomenorrhea, low availability of energy with or without an eating disorder, and low bone mineral density associated with osteopenia or osteoporosis.",
+                    "whyOthersIncorrect": "Compulsive exercise (A) is not a component of the female athlete triad. Low levels of energy, not high energy levels (B), are associated with this condition due to restricted caloric intake. Mental health disorders (D) are not a component of this triad, but patients may need to be screened for abuse.",
+                    "references": [
+                        {
+                            "text": "Ackerman KE, Misra M. Functional hypothalamic amenorrhea: evaluation and management. Post TW, ed. UpToDate. UpToDate Inc. Accessed February 14, 2023.",
+                            "url": "https://www.uptodate.com/contents/functional-hypothalamic-amenorrhea-evaluation-and-management"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 17,
+                    "questionText": "A 30-year-old patient presents with an altered sense of taste. On physical examination, a thick, white plaque is present on the patient's tongue. The plaques can be scraped off with a tongue depressor. What is the most likely diagnosis?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Candidiasis",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Herpes simplex",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Leukoplakia",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Lichen planus",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "There are multiple diagnoses that can cause white plaques within the oral cavity. Thick, white plaques that can be easily scraped away are most consistent with a diagnosis of candidiasis (A).",
+                    "whyOthersIncorrect": "Herpes simplex (B) can cause white patches in the mouth, but there are associated painful lesions. Leukoplakia (C) causes white plaques, but the plaques adhere and cannot be easily scraped away. Lichen planus (D) causes white streaking in the mouth but typically has accompanying painful lesions.",
+                    "references": [
+                        {
+                            "text": "Kauffman CA, Vazquez JA. Oropharyngeal candidiasis in adults. Post TW, ed. UpToDate. UpToDate Inc. Accessed January 5, 2025.",
+                            "url": "https://www.uptodate.com/contents/oropharyngeal-candidiasis-in-adults"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 18,
+                    "questionText": "Which of the following findings is not considered a cardinal symptom of Crohn disease?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Abdominal pain",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Diarrhea",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Elevated tissue transglutaminase-IgA antibody",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Weight loss",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Crohn disease is a type of chronic inflammatory bowel disease (IBD) that can present in any part of the digestive tract and is not localized to the colon. A tissue transglutaminase-IgA antibody level (C) is ordered when celiac disease is suspected.",
+                    "whyOthersIncorrect": "Abdominal pain (A), diarrhea (B) and weight loss (D) are considered cardinal symptoms of Crohn disease. Common colonoscopy findings include pseudopolyps and skip lesions, or areas of diseased bowel scattered between normal-appearing tissue.",
+                    "references": [
+                        {
+                            "text": "Peppercorn MA, Kane SV. Clinical manifestations, diagnosis, and prognosis of Crohn disease in adults. Post TW, ed. UpToDate. UpToDate Inc. Accessed February 14, 2023.",
+                            "url": "https://www.uptodate.com/contents/clinical-manifestations-diagnosis-and-prognosis-of-crohn-disease-in-adults"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 19,
+                    "questionText": "A 19-year-old man presents to the clinic with heaviness and painless swelling on the right side of his scrotum that has persisted for 3 weeks. An in-office ultrasound shows a solid mass present on the right testicle. Which of the following is the most likely next step in management?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Perform transillumination on the scrotum",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Prescribe antibiotics",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Refer the patient for radical inguinal orchiectomy",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Refer the patient for tumor markers",
+                            "isCorrect": true
+                        }
+                    ],
+                    "explanation": "The primary differential diagnosis for a patient with a firm, fixed, painless testicular mass is testicular cancer. Since an ultrasound already confirmed a solid mass, the next step in management is to refer the patient for tumor markers (D), as nurse practitioners will use these levels for staging, prognosis, and a baseline measurement for comparing levels throughout treatment.",
+                    "whyOthersIncorrect": "Prescribing antibiotics (B) is not appropriate for this patient, as the ultrasound confirmed a solid mass, likely testicular cancer, and not an infection. Transillumination (A) is not indicated, as an ultrasound has already been performed to rule out causes like hydrocele. While referring the patient for radical inguinal orchiectomy (C) is likely in this patient's future, it is not the next step in management of testicular cancer following an ultrasound.",
+                    "references": [
+                        {
+                            "text": "Steele GS, Richie JP, Michaelson MD. Clinical manifestations, diagnosis, and staging of testicular germ cell tumors. Post TW, ed. UpToDate. UpToDate Inc. Accessed January 12, 2023.",
+                            "url": "https://www.uptodate.com/contents/clinical-manifestations-diagnosis-and-staging-of-testicular-germ-cell-tumors"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 20,
+                    "questionText": "Which of the following conditions is ciprofloxacin NOT recommended to treat?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Chronic bacterial prostatitis",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Cutaneous anthrax",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Streptococcus pneumoniae infection",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Typhoid fever",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Ciprofloxacin is not recommended as treatment for Streptococcus pneumoniae infection (C). Streptococcus pneumoniae is a type of bacteria that commonly causes community-acquired pneumonia. Ciprofloxacin is a fluoroquinolone medication that is less active against gram-positive pathogens like Streptococcus pneumoniae.",
+                    "whyOthersIncorrect": "Chronic bacterial prostatitis (A), cutaneous anthrax (B), and typhoid fever (D) are all effectively treated with ciprofloxacin.",
+                    "references": [
+                        {
+                            "text": "File TM Jr. Treatment of community-acquired pneumonia in adults in the outpatient setting. Post TW, ed. UpToDate. UpToDate Inc. Accessed February 14, 2023.",
+                            "url": "https://www.uptodate.com/contents/treatment-of-community-acquired-pneumonia-in-adults-in-the-outpatient-setting"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 21,
+                    "questionText": "A parent brings her 5-month-old daughter into the clinic due to reports that her daughter has not been sleeping well, has been fussier than normal for the last 3 days, has developed a slight fever over the past 24 hours, and has been tugging at her right ear. Otoscopic examination reveals a red bulging tympanic membrane in the right ear. The patient has no known drug allergies. What antibiotic should be most appropriate to prescribe to this patient?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Amoxicillin",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Amoxicillin-clavulanate",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Azithromycin",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Ceftriaxone",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "The patient is presenting with symptoms consistent with acute otitis media. Amoxicillin (A) is the antibiotic of choice for initial treatment and can be flavored for optimal compliance, given that infants may resist swallowing a liquid that tastes poorly.",
+                    "whyOthersIncorrect": "Azithromycin (C) is not recommended for treatment of acute otitis media in children, as it is likely to have limited activity against the responsible pathogens. Amoxicillin-clavulanate (B) is a reasonable choice, though it is typically reserved for resistant cases in which amoxicillin alone has not been effective. The use of ceftriaxone (D) is recommended only if the patient has an allergy to penicillin or if previous treatment with amoxicillin has failed.",
+                    "references": [
+                        {
+                            "text": "Pelton SI, Tähtinen P. Acute otitis media in children: treatment. Post TW, ed. UpToDate. UpToDate Inc. Accessed January 19, 2023.",
+                            "url": "https://www.uptodate.com/contents/acute-otitis-media-in-children-treatment"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 22,
+                    "questionText": "A 9-year-old patient presents to the office with reports of coughing and wheezing. Which diagnostic tool is used to confirm the diagnosis of asthma?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Bronchoprovocation testing",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Chest X-ray",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Pulse oximetry",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Spirometry",
+                            "isCorrect": true
+                        }
+                    ],
+                    "explanation": "Asthma is a chronic pulmonary condition caused by airway inflammation that causes coughing, shortness of breath, and wheezing. The demonstration of airflow limitation on spirometry (D) testing is considered diagnostic of asthma.",
+                    "whyOthersIncorrect": "Bronchoprovocation testing (A) can be used when a patient is exhibiting the symptoms of asthma by observing how a patient's airway responds to an irritant, but it is typically completed after a patient has a normal spirometry reading. A chest X-ray (B) is not diagnostic of asthma, but it can be helpful in diagnosing conditions that cause similar symptoms, such as pneumonia or congenital heart malformations. Pulse oximetry (C) can detect decreased oxygen levels, which can occur with severe asthma exacerbations and other conditions, but it does not confirm a diagnosis of asthma.",
+                    "references": [
+                        {
+                            "text": "Sawicki G, Haver K. Asthma in children younger than 12 years: initial evaluation and diagnosis. Post TW, ed. UpToDate. UpToDate Inc. Accessed August 22, 2024.",
+                            "url": "https://www.uptodate.com/contents/asthma-in-children-younger-than-12-years-initial-evaluation-and-diagnosis"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 23,
+                    "questionText": "Which of the following elevated lab values would be consistent with a diagnosis of heart failure?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "B-type natriuretic peptide",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "D-dimer",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Gamma-glutamyltransferase",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Triglycerides",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "B-type natriuretic peptide (BNP) (A) is a biomarker used in the diagnosis of heart failure. It is a hormone produced primarily by the ventricles of the heart. The strain placed on the left ventricle caused by heart failure results in the release of BNP into the plasma.",
+                    "whyOthersIncorrect": "D-dimer (B) may be elevated in cases of thromboembolism, disseminated intravascular coagulation, or malignancy. In patients with liver disease, the gamma-glutamyltransferase (C) level is commonly elevated. Triglycerides (D) may be elevated due to insulin resistance, hypothyroidism, or certain medications.",
+                    "references": [
+                        {
+                            "text": "Colucci WS, Chen HH. Natriuretic peptide measurement in heart failure. Post TW, ed. UpToDate. UpToDate Inc. Accessed September 18, 2024.",
+                            "url": "https://www.uptodate.com/contents/natriuretic-peptide-measurement-in-heart-failure"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 24,
+                    "questionText": "A 60-year-old man has been on an approved multidrug regimen for 2 weeks to treat an active tuberculosis infection. Which of the following is the best method to confirm that the patient is no longer contagious?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Chest X-ray",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Purified protein derivative (PPD) test",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "QuantiFERON-Gold blood test",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Sputum culture for acid-fast bacilli (AFB)",
+                            "isCorrect": true
+                        }
+                    ],
+                    "explanation": "Tuberculosis is an infectious disease transmitted via airborne droplets. It is caused by the bacteria Mycobacterium tuberculosis. A patient is considered no longer contagious when three consecutive negative sputum cultures for AFB (D) are on record.",
+                    "whyOthersIncorrect": "A chest X-ray (A) and PPD test (B) are used when screening for tuberculosis. A QuantiFERON-Gold blood test (C) is recommended for diagnosing a tuberculosis infection.",
+                    "references": [
+                        {
+                            "text": "Fitzpatrick ME, Prendergast NT, Rivera-Lebron B. Pulmonary tuberculosis. In: Papadakis MA, McPhee SJ, Rabow MW, McQuaid KR. eds. Current Medical Diagnosis & Treatment 2023. McGraw Hill; 2023:(Ch) 9-13.",
+                            "url": "https://accessmedicine.mhmedical.com/content.aspx?bookid=3212&sectionid=269162078"
+                        }
+                    ]
+                },
+                {
+                    "questionNumber": 25,
+                    "questionText": "A 63-year-old man with a medical history of Lyme disease presents to the clinic for left leg pain that has been going on for the last few weeks. He states the pain feels like an electric shock down his left leg and into his foot. He also notes a burning, numb, and tingly sensation in the left foot intermittently. Which of the following is the most appropriate therapy?",
+                    "answerChoices": [
+                        {
+                            "letter": "A",
+                            "text": "Amitriptyline",
+                            "isCorrect": true
+                        },
+                        {
+                            "letter": "B",
+                            "text": "Methotrexate",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "C",
+                            "text": "Naproxen",
+                            "isCorrect": false
+                        },
+                        {
+                            "letter": "D",
+                            "text": "Phenelzine",
+                            "isCorrect": false
+                        }
+                    ],
+                    "explanation": "Amitriptyline (A) is a tricyclic antidepressant that is used to treat a variety of psychiatric and neurological diseases. It is a first-line agent to treat neuropathic pain because of its analgesic properties.",
+                    "whyOthersIncorrect": "Methotrexate (B) is a disease-modifying antirheumatic drug that is commonly used to treat autoimmune disorders such as rheumatoid arthritis. Naproxen (Aleve) (C) is a nonsteroidal anti-inflammatory drug commonly used to treat musculoskeletal pain. Phenelzine (Nardil) (D) is a monoamine oxidase inhibitor, a type of antidepressant.",
+                    "references": [
+                        {
+                            "text": "Callaghan BC. Peripheral neuropathy. DynaMed website. Accessed February 14, 2023.",
+                            "url": "https://www.dynamed.com/condition/peripheral-neuropathy"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        function BlueprintTestApp() {
+            const [currentMode, setCurrentMode] = useState('menu');
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedAnswers, setSelectedAnswers] = useState({});
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [testQuestions, setTestQuestions] = useState([]);
+            const [immediateMode, setImmediateMode] = useState(true);
+            const [score, setScore] = useState({ correct: 0, total: 0 });
+
+            const startTest = (mode) => {
+                if (mode === 'random5') {
+                    const shuffled = [...questionData.questions].sort(() => 0.5 - Math.random());
+                    setTestQuestions(shuffled.slice(0, 5));
+                } else {
+                    setTestQuestions(questionData.questions);
+                }
+                setCurrentMode('test');
+                setCurrentQuestionIndex(0);
+                setSelectedAnswers({});
+                setShowFeedback(false);
+                setScore({ correct: 0, total: 0 });
+            };
+
+            const selectAnswer = (questionIndex, letter) => {
+                setSelectedAnswers(prev => ({
+                    ...prev,
+                    [questionIndex]: letter
+                }));
+
+                if (immediateMode) {
+                    setShowFeedback(true);
+                }
+            };
+
+            const nextQuestion = () => {
+                if (currentQuestionIndex < testQuestions.length - 1) {
+                    setCurrentQuestionIndex(prev => prev + 1);
+                    setShowFeedback(false);
+                } else {
+                    finishTest();
+                }
+            };
+
+            const finishTest = () => {
+                let correct = 0;
+                testQuestions.forEach((question, index) => {
+                    const selectedLetter = selectedAnswers[index];
+                    const correctAnswer = question.answerChoices.find(choice => choice.isCorrect);
+                    if (selectedLetter === correctAnswer?.letter) {
+                        correct++;
+                    }
+                });
+                setScore({ correct, total: testQuestions.length });
+                setCurrentMode('results');
+            };
+
+            const restartTest = () => {
+                setCurrentMode('menu');
+                setCurrentQuestionIndex(0);
+                setSelectedAnswers({});
+                setShowFeedback(false);
+                setTestQuestions([]);
+                setScore({ correct: 0, total: 0 });
+            };
+
+            const currentQuestion = testQuestions[currentQuestionIndex];
+            const selectedAnswer = selectedAnswers[currentQuestionIndex];
+            const correctAnswer = currentQuestion?.answerChoices.find(choice => choice.isCorrect);
+            const isCorrect = selectedAnswer === correctAnswer?.letter;
+
+            if (currentMode === 'menu') {
+                return (
+                    <div className="app-container">
+                        <div className="header">
+                            <h1>🏥 Blueprint QBank Practice</h1>
+                            <p>Master your medical knowledge with interactive practice tests</p>
+                            <p>📊 Loaded {questionData.questions.length} complete questions with full explanations</p>
+                        </div>
+                        <div className="content">
+                            <div className="settings">
+                                <div className="setting-item">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={immediateMode}
+                                            onChange={(e) => setImmediateMode(e.target.checked)}
+                                        />
+                                        Show immediate feedback after each answer
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div className="mode-selector">
+                                <button 
+                                    className="mode-card random"
+                                    onClick={() => startTest('random5')}
+                                >
+                                    <h3>🎲 Quick Practice</h3>
+                                    <p>5 random questions</p>
+                                    <p>Perfect for quick review sessions</p>
+                                </button>
+                                
+                                <button 
+                                    className="mode-card full"
+                                    onClick={() => startTest('full')}
+                                >
+                                    <h3>📚 Full Test</h3>
+                                    <p>All {questionData.questions.length} questions</p>
+                                    <p>Complete practice experience</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (currentMode === 'test') {
+                return (
+                    <div className="app-container">
+                        <div className="header">
+                            <h1>🏥 Blueprint QBank Practice</h1>
+                            <div className="progress">
+                                Question {currentQuestionIndex + 1} of {testQuestions.length}
+                            </div>
+                        </div>
+                        <div className="content">
+                            <div className="question-container">
+                                <div className="question-header">
+                                    <div className="question-number">
+                                        Question {currentQuestion.questionNumber}
+                                    </div>
+                                    <div className="question-text">
+                                        {currentQuestion.questionText}
+                                    </div>
+                                </div>
+
+                                <div className="answers">
+                                    {currentQuestion.answerChoices.map((choice) => {
+                                        let className = "answer-option";
+                                        
+                                        if (selectedAnswer === choice.letter) {
+                                            className += " selected";
+                                        }
+                                        
+                                        if (showFeedback) {
+                                            if (choice.isCorrect) {
+                                                className += " correct";
+                                            } else if (selectedAnswer === choice.letter && !choice.isCorrect) {
+                                                className += " incorrect";
+                                            }
+                                        }
+
+                                        return (
+                                            <button
+                                                key={choice.letter}
+                                                className={className}
+                                                onClick={() => selectAnswer(currentQuestionIndex, choice.letter)}
+                                                disabled={showFeedback}
+                                            >
+                                                <span className="answer-letter">{choice.letter}.</span>
+                                                {choice.text.replace(/^[A-E]\.\s*/, '')}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                {showFeedback && (
+                                    <div className={`feedback ${isCorrect ? '' : 'incorrect'}`}>
+                                        <h4>
+                                            {isCorrect ? '✅ Correct!' : '❌ Incorrect'}
+                                        </h4>
+                                        {!isCorrect && (
+                                            <p><strong>Correct Answer:</strong> {correctAnswer?.letter}. {correctAnswer?.text.replace(/^[A-E]\.\s*/, '')}</p>
+                                        )}
+                                        
+                                        <div className="explanation">
+                                            <strong>Explanation:</strong><br />
+                                            {currentQuestion.explanation}
+                                        </div>
+
+                                        {currentQuestion.whyOthersIncorrect && (
+                                            <div className="why-others">
+                                                <strong>Why are the other choices incorrect?</strong><br />
+                                                {currentQuestion.whyOthersIncorrect}
+                                            </div>
+                                        )}
+
+                                        {currentQuestion.references && currentQuestion.references.length > 0 && (
+                                            <div className="references">
+                                                <strong>References:</strong><br />
+                                                {currentQuestion.references.map((ref, index) => (
+                                                    <div key={index}>
+                                                        • {ref.url ? <a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.text}</a> : ref.text}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="controls">
+                                <button 
+                                    className="btn secondary"
+                                    onClick={restartTest}
+                                >
+                                    🏠 Back to Menu
+                                </button>
+                                
+                                {!immediateMode && selectedAnswer && !showFeedback && (
+                                    <button 
+                                        className="btn"
+                                        onClick={() => setShowFeedback(true)}
+                                    >
+                                        Show Answer
+                                    </button>
+                                )}
+                                
+                                {(showFeedback || (!immediateMode && !selectedAnswer)) && (
+                                    <button 
+                                        className="btn"
+                                        onClick={currentQuestionIndex === testQuestions.length - 1 ? finishTest : nextQuestion}
+                                        disabled={!selectedAnswer}
+                                    >
+                                        {currentQuestionIndex === testQuestions.length - 1 ? 'Finish Test' : 'Next Question'} →
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (currentMode === 'results') {
+                const percentage = Math.round((score.correct / score.total) * 100);
+                
+                return (
+                    <div className="app-container">
+                        <div className="header">
+                            <h1>🏥 Blueprint QBank Practice</h1>
+                            <p>Test Complete!</p>
+                        </div>
+                        <div className="content">
+                            <div className="score-summary">
+                                <h2>🎉 Your Results</h2>
+                                <div className="score-stats">
+                                    <div className="stat">
+                                        <div className="stat-number">{percentage}%</div>
+                                        <div>Score</div>
+                                    </div>
+                                    <div className="stat">
+                                        <div className="stat-number">{score.correct}</div>
+                                        <div>Correct</div>
+                                    </div>
+                                    <div className="stat">
+                                        <div className="stat-number">{score.total - score.correct}</div>
+                                        <div>Incorrect</div>
+                                    </div>
+                                    <div className="stat">
+                                        <div className="stat-number">{score.total}</div>
+                                        <div>Total</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                                <button 
+                                    className="btn"
+                                    onClick={restartTest}
+                                    style={{ marginRight: '15px' }}
+                                >
+                                    🔄 Take Another Test
+                                </button>
+                                <button 
+                                    className="btn secondary"
+                                    onClick={() => {
+                                        setCurrentMode('review');
+                                        setCurrentQuestionIndex(0);
+                                        setShowFeedback(true);
+                                    }}
+                                >
+                                    📋 Review Answers
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Review mode (similar to test mode but shows all answers)
+            return (
+                <div className="app-container">
+                    <div className="header">
+                        <h1>🏥 Blueprint QBank Practice</h1>
+                        <div className="progress">
+                            Review: Question {currentQuestionIndex + 1} of {testQuestions.length}
+                        </div>
+                    </div>
+                    <div className="content">
+                        <div className="question-container">
+                            <div className="question-header">
+                                <div className="question-number">
+                                    Question {currentQuestion.questionNumber}
+                                </div>
+                                <div className="question-text">
+                                    {currentQuestion.questionText}
+                                </div>
+                            </div>
+
+                            <div className="answers">
+                                {currentQuestion.answerChoices.map((choice) => {
+                                    let className = "answer-option";
+                                    const userSelected = selectedAnswers[currentQuestionIndex] === choice.letter;
+                                    
+                                    if (choice.isCorrect) {
+                                        className += " correct";
+                                    } else if (userSelected) {
+                                        className += " incorrect";
+                                    }
+
+                                    return (
+                                        <div key={choice.letter} className={className}>
+                                            <span className="answer-letter">{choice.letter}.</span>
+                                            {choice.text.replace(/^[A-E]\.\s*/, '')}
+                                            {choice.isCorrect && <span> ✅</span>}
+                                            {userSelected && !choice.isCorrect && <span> (Your answer) ❌</span>}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <div className="feedback">
+                                <h4>Explanation</h4>
+                                <div className="explanation">
+                                    {currentQuestion.explanation}
+                                </div>
+
+                                {currentQuestion.whyOthersIncorrect && (
+                                    <div className="why-others">
+                                        <strong>Why are the other choices incorrect?</strong><br />
+                                        {currentQuestion.whyOthersIncorrect}
+                                    </div>
+                                )}
+
+                                {currentQuestion.references && currentQuestion.references.length > 0 && (
+                                    <div className="references">
+                                        <strong>References:</strong><br />
+                                        {currentQuestion.references.map((ref, index) => (
+                                            <div key={index}>
+                                                • {ref.url ? <a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.text}</a> : ref.text}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="controls">
+                            <button 
+                                className="btn secondary"
+                                onClick={restartTest}
+                            >
+                                🏠 Back to Menu
+                            </button>
+                            
+                            <button 
+                                className="btn"
+                                onClick={() => {
+                                    if (currentQuestionIndex > 0) {
+                                        setCurrentQuestionIndex(prev => prev - 1);
+                                    }
+                                }}
+                                disabled={currentQuestionIndex === 0}
+                            >
+                                ← Previous
+                            </button>
+                            
+                            <button 
+                                className="btn"
+                                onClick={() => {
+                                    if (currentQuestionIndex < testQuestions.length - 1) {
+                                        setCurrentQuestionIndex(prev => prev + 1);
+                                    } else {
+                                        restartTest();
+                                    }
+                                }}
+                            >
+                                {currentQuestionIndex === testQuestions.length - 1 ? 'Back to Menu' : 'Next →'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<BlueprintTestApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
